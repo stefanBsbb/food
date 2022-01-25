@@ -33,4 +33,8 @@ public class HomeController {
 
 		return "LoginRegister/RegisterSuccess";
 	}
+	  @GetMapping("/login")
+	    public String viewLoginPage() {	         
+	        return "LoginRegister/Login";
+	    }
 }

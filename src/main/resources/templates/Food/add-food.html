@@ -14,7 +14,7 @@
             <h2 class="mb-5">New Food</h2>
             <div class="row">
                 <div class="col-md-6">
-                    <form action="#" th:action="@{/addfood}" th:object="${food}" method="post">
+                    <form action="#" th:action="@{/addfood}" th:object="${food}" method="post" enctype="multipart/form-data">
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <label for="name" class="col-form-label">Name</label>
@@ -32,8 +32,8 @@
                                 <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="photos" class="col-form-label">Photos</label>
-                                <input type="file" th:field="*{photos}" class="form-control" accept="image/png, image/jpeg" id="Photos" placeholder="Photos">
+                                <label for="image" class="col-form-label">Photos</label>
+                                <input type="file" name="image" accept="image/png, image/jpeg" />
                                 <span th:if="${#fields.hasErrors('photos')}" th:errors="*{photos}" class="text-danger"></span>
                             </div>
 

@@ -21,7 +21,7 @@ public class User {
     @Column(nullable = false, length = 64)
     private String password;
      
-    @Column(name = "username", nullable = false, length = 20)
+    @Column(name = "username", unique = true, nullable = false, length = 20)
     private String username;
 
 	public Long getId() {

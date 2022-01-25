@@ -1,5 +1,6 @@
 package com.st.food.controllers;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -8,11 +9,15 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.st.food.Helpers.FileUploadUtil;
 import com.st.food.models.Category;
 import com.st.food.models.Food;
 import com.st.food.repositories.CategoryRepository;
@@ -30,27 +35,35 @@ public class FoodController {
 	
     @GetMapping("/food")
     public String index(Model model) {
-        model.addAttribute("food", foodRepository.findAll());
+        model.addAttribute("foods", foodRepository.findAll());
         return "Food/index";
     }
     
-    @GetMapping("/foodform")
+    @GetMapping("/foodform")	
     public String showSignUpForm(Model model) {
     	List<Category> categories = categoryRepository.findAll();
     	model.addAttribute("categories", categories);
     	model.addAttribute("food", new Food());
+    	
+    	
         return "Food/add-food";
     }
 
     @PostMapping("/addfood")
-    public String addFood(@Valid Food food, BindingResult result, Model model) {
+    public String addFood(@Valid Food food, BindingResult result, Model model, @RequestParam("image") MultipartFile multipartFile) throws IOException {
         if (result.hasErrors()) {
             return "Food/add-food";
         }
-
-        foodRepository.save(food);
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        food.setPhotos(fileName);
+        Food savedFood = foodRepository.save(food);
+        
+        String uploadDir = "src/main/resources/photos/" + savedFood.getId();
+        
+        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+        
         model.addAttribute("foods", foodRepository.findAll());
-        return "redirect:/foods";
+        return "redirect:/food";
     }
 
     @GetMapping("/food/edit/{id}")
@@ -73,7 +86,7 @@ public class FoodController {
 
         foodRepository.save(food);
         model.addAttribute("foods", foodRepository.findAll());
-        return "redirect:/foods";
+        return "redirect:/food";
     }
 
     @GetMapping("/food/delete/{id}")
@@ -82,6 +95,6 @@ public class FoodController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid food Id:" + id));
         foodRepository.delete(food);
         model.addAttribute("foods", foodRepository.findAll());
-        return "redirect:/foods";
+        return "redirect:/food";
     }
 }

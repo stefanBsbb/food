@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -38,6 +39,13 @@ public class Food {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "category_id")
 	private Category category;
+
+    @Transient
+    public String getPhotosImagePath() {
+        if (photos == null || id == null) return null;
+         
+        return id + "/" + photos;
+    }
 
 	public Long getId() {
 		return id;

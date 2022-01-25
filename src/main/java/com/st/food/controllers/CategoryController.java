@@ -22,26 +22,26 @@ public class CategoryController {
     private CategoryRepository categoryRepository;    
 
 	
-    @GetMapping("/categorys")
+    @GetMapping("/categories")
     public String index(Model model) {
-        model.addAttribute("categorys", categoryRepository.findAll());
-        return "category/index";
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "Categories/index";
     }
     
     @GetMapping("/categoryform")
     public String showSignUpForm(Category category) {
-        return "category/add-category";
+        return "Categories/add-category";
     }
 
     @PostMapping("/addcategory")
     public String addCategory(@Valid Category category, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "category/add-category";
+            return "Categories/add-category";
         }
 
         categoryRepository.save(category);
-        model.addAttribute("categorys", categoryRepository.findAll());
-        return "redirect:/categorys";
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "redirect:/categories";
     }
 
     @GetMapping("/category/edit/{id}")
@@ -50,7 +50,7 @@ public class CategoryController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category Id:" + id));
 
         model.addAttribute("category", category);
-        return "category/update-category";
+        return "Categories/update-category";
     }
 
     @PostMapping("/category/update/{id}")
@@ -58,12 +58,12 @@ public class CategoryController {
             BindingResult result, Model model) {
         if (result.hasErrors()) {
         	category.setId(id);
-            return "category/update-category";
+            return "Categories/update-category";
         }
 
         categoryRepository.save(category);
-        model.addAttribute("categorys", categoryRepository.findAll());
-        return "redirect:/categorys";
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "redirect:/categories";
     }
 
     @GetMapping("/category/delete/{id}")
@@ -71,7 +71,7 @@ public class CategoryController {
     	Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category Id:" + id));
         categoryRepository.delete(category);
-        model.addAttribute("categorys", categoryRepository.findAll());
-        return "redirect:/categorys";
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "redirect:/categories";
     }
 }
